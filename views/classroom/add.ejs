@@ -1,0 +1,54 @@
+<%- include('../partials/header') %>
+<div class="container">
+  <h2>إضافة قاعة دراسية جديدة</h2>
+  <% if (error) { %>
+    <div class="error"><%= error %></div>
+  <% } %>
+  <form action="/classroom/add" method="POST">
+    <div class="form-group">
+      <label for="name">اسم القاعة:</label>
+      <input type="text" id="name" name="name" required placeholder="أدخل اسم القاعة">
+    </div>
+    <div class="form-group">
+      <label for="type">نوع القاعة:</label>
+      <select id="hallType" name="hallType" required>
+        <option value="">اختر نوع القاعة</option>
+        <option value="حضوري">حضوري</option>
+        <option value="مسجل">مسجل</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="department">القسم:</label>
+      <input type="text" id="department" name="department" required placeholder="أدخل القسم">
+    </div>
+    <!-- يتم إخفاء حقل رابط الاجتماع ما لم يتم اختيار نوع حضوري -->
+    <div class="form-group" id="onlineMeetingContainer" style="display: none;">
+      <label for="onlineMeetingLink">رابط الاجتماع أونلاين:</label>
+      <input type="text" id="onlineMeetingLink" name="onlineMeetingLink" placeholder="أدخل رابط الاجتماع">
+    </div>
+    <button type="submit">إضافة القاعة الدراسية</button>
+  </form>
+</div>
+
+<!-- سكربت لتحديث عرض حقل رابط الاجتماع بناءً على اختيار نوع القاعة -->
+<script>
+  const typeSelect = document.getElementById('type');
+  const onlineContainer = document.getElementById('onlineMeetingContainer');
+  const onlineInput = document.getElementById('onlineMeetingLink');
+
+  function updateOnlineMeetingVisibility() {
+    if (typeSelect.value === 'حضوري') {
+      onlineContainer.style.display = 'block';
+      onlineInput.setAttribute('required', 'required');
+    } else {
+      onlineContainer.style.display = 'none';
+      onlineInput.removeAttribute('required');
+    }
+  }
+
+  // تحديث العرض عند تغيير اختيار نوع القاعة
+  typeSelect.addEventListener('change', updateOnlineMeetingVisibility);
+  // تحديث العرض عند تحميل الصفحة
+  updateOnlineMeetingVisibility();
+</script>
+<%- include('../partials/footer') %>

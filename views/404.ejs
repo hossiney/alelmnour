@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>404 - الصفحة غير موجودة | العلم نور</title>
+  <!-- ربط خط "كايرو" -->
+  <link href="https://fonts.googleapis.com/css2?family=Cairo&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background: #fff;
+      font-family: 'Cairo', sans-serif;
+      color: #0056b3;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      direction: rtl;
+    }
+    .container {
+      text-align: center;
+      animation: fadeIn 1.5s ease-in-out;
+    }
+    .error-code {
+      font-size: 8rem;
+      margin-bottom: 20px;
+    }
+    .message {
+      font-size: 1.5rem;
+      margin-bottom: 30px;
+    }
+    .btn {
+      display: inline-block;
+      text-decoration: none;
+      padding: 12px 25px;
+      background: #0056b3;
+      color: #fff;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+    .btn:hover {
+      background: #003f7f;
+    }
+    /* تأثير ظهور تدريجي */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    /* مثال لإضافة حركة بسيطة للصور */
+    .illustration {
+      max-width: 300px;
+      margin-bottom: 30px;
+      animation: float 3s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- يمكنك استبدال "vector-404.svg" بصورة فيكتور مناسبة أو أنميشن -->
+    <img class="illustration" src="/images/11527922.jpg" alt="صورة توضيحية لخطأ 404">
+    <div class="error-code">404</div>
+    <div class="message">عذرًا، الصفحة التي تبحث عنها غير موجودة!</div>
+    <a class="btn" href="/">العودة إلى الرئيسية</a>
+  </div>
+</body>
+</html>

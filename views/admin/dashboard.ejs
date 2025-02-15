@@ -1,0 +1,328 @@
+<%- include('../partials/header') %>
+
+<!-- تأكد من تضمين روابط Bootstrap وFontAwesome في head (إذا لم تكن موجودة) -->
+<!-- مثال: -->
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- FontAwesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+<link href="https://fonts.googleapis.com/css?family=Cairo&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- الشريط الجانبي (Aside) -->
+    
+    <br>
+    <!-- المحتوى الرئيسي -->
+    <main class="col-md-12 p-4">
+      <h2 class="mb-4">لوحة التحكم - مدير النظام</h2>
+      
+      <!-- زر عرض Modal إضافة عضو جديد -->
+      <button type="button" class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#addMemberModal">
+        <i class="fas fa-user-plus me-2"></i>إضافة عضو جديد
+      </button>
+      
+      <!-- Modal إضافة عضو جديد -->
+      <div class="modal fade" id="addMemberModal" tabindex="-1" aria-labelledby="addMemberModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <form action="/admin/add-member" method="POST">
+              <div class="modal-header">
+                <h5 class="modal-title" id="addMemberModalLabel">إضافة عضو جديد</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+              </div>
+              <div class="modal-body">
+                <div class="mb-3">
+                  <label for="name" class="form-label">اسم العضو:</label>
+                  <input type="text" class="form-control" id="name" name="name" required placeholder="أدخل اسم العضو">
+                </div>
+                <div class="mb-3">
+                  <label for="mobile" class="form-label">رقم الجوال:</label>
+                  <input type="text" class="form-control" id="mobile" name="mobile" required placeholder="أدخل رقم الجوال">
+                </div>
+                <div class="mb-3">
+                  <label for="invoice" class="form-label">رقم الفاتورة:</label>
+                  <input type="text" class="form-control" id="invoice" name="invoice" required placeholder="أدخل رقم الفاتورة">
+                </div>
+                <!-- قائمة اختيار القسم (يتم استخراجها من بيانات القاعات) -->
+                <div class="mb-3">
+                  <label for="departmentSelect" class="form-label">اختر القسم:</label>
+                  <select id="departmentSelect" name="departmentSelect" class="form-select" required>
+                    <option value="">اختر القسم</option>
+                    <% departments.forEach(function(dept) { %>
+                      <option value="<%= dept %>"><%= dept %></option>
+                    <% }); %>
+                  </select>
+                </div>
+                <!-- قائمة اختيار القاعة الدراسية -->
+                <div class="mb-3">
+                  <label for="classroomId" class="form-label">القاعة الدراسية:</label>
+                  <select id="classroomId" name="classroomId" class="form-select" required>
+                    <option value="">اختر القاعة</option>
+                    <% classrooms.forEach(function(classroom) { %>
+                      <option value="<%= classroom._id %>" data-department="<%= classroom.department %>">
+                        <%= classroom.name %> - <%= classroom.hallType %>
+                      </option>
+                    <% }); %>
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label for="expirationDate" class="form-label">تاريخ الانتهاء:</label>
+                  <input type="date" class="form-control" id="expirationDate" name="expirationDate" required>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+                <button type="submit" class="btn btn-primary">إضافة العضو</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      
+      <!-- جدول عرض قائمة الأعضاء باستخدام Grid.js -->
+      <div id="members-grid"></div>
+    </main>
+
+
+<!-- Modal لعرض الفواتير -->
+<div class="modal fade" id="invoiceModal" tabindex="-1" aria-labelledby="invoiceModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="invoiceModalLabel">تفاصيل الفواتير</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+        </div>
+        <div class="modal-body">
+          <h5>فواتير <span id="invoiceMemberName"></span></h5>
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>رقم الفاتورة</th>
+                <th>القسم</th>
+                <th>القاعه</th>
+                <th>تاريخ الإصدار</th>
+                <th>حالة الاشتراك</th>
+              </tr>
+            </thead>
+            <tbody id="invoiceTableBody">
+              <!-- يتم تعبئته ديناميكيًا -->
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="addInvoiceModal" tabindex="-1" aria-labelledby="addInvoiceModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form action="/invoice/add" method="POST">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addInvoiceModalLabel">إضافة فاتورة جديدة</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+          </div>
+          <div class="modal-body">
+            <!-- حفظ معرف العضو المخفي -->
+            <input type="hidden" id="invoiceMemberId" name="memberId">
+            <div class="mb-3">
+              <label for="invoiceNumberModal" class="form-label">رقم الفاتورة:</label>
+              <input type="text" class="form-control" id="invoiceNumberModal" name="invoiceNumber" required placeholder="أدخل رقم الفاتورة">
+            </div>
+            <!-- نترك حقل رقم الجوال وحقل الاسم لأنها ليست مطلوبة هنا -->
+
+            <div class="mb-3">
+              <label for="departmentSelectModal" class="form-label">اختر القسم:</label>
+              <select id="departmentSelectModal" name="departmentSelectModal" class="form-select" required>
+                <option value="">اختر القسم</option>
+                <% departments.forEach(function(dept) { %>
+                  <option value="<%= dept %>"><%= dept %></option>
+                <% }); %>
+              </select>
+            </div>
+            <!-- قائمة اختيار القاعة الدراسية -->
+            <div class="mb-3">
+              <label for="classroomIdModal" class="form-label">القاعة الدراسية:</label>
+              <select id="classroomIdModal" name="classroomId" class="form-select" required>
+                <option value="">اختر القاعة</option>
+                <% classrooms.forEach(function(classroom) { %>
+                  <option value="<%= classroom._id %>" data-department="<%= classroom.department %>">
+                    <%= classroom.name %> - <%= classroom.hallType %>
+                  </option>
+                <% }); %>
+              </select>
+              
+  
+            <div class="mb-3">
+              <label for="expirationDateModal" class="form-label">تاريخ الانتهاء:</label>
+              <input type="date" class="form-control" id="expirationDateModal" name="expirationDate" required>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+            <button type="submit" class="btn btn-primary">إضافة الفاتورة</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+<!-- سكربت لتصفية قائمة القاعات داخل الـ Modal -->
+<script>
+  const departmentSelect = document.getElementById('departmentSelect');
+  const classroomSelect = document.getElementById('classroomId');
+  
+  function filterClassrooms() {
+    const selectedDept = departmentSelect.value;
+    for (let i = 0; i < classroomSelect.options.length; i++) {
+      const option = classroomSelect.options[i];
+      if (!option.value) continue; // تخطي الخيار الافتراضي
+      option.style.display = (option.getAttribute('data-department') === selectedDept) ? 'block' : 'none';
+    }
+    // اختيار الخيار الأول الظاهر تلقائياً (اختياري)
+    let found = false;
+    for (let i = 0; i < classroomSelect.options.length; i++) {
+      const option = classroomSelect.options[i];
+      if (option.style.display === 'block' && option.value) {
+        classroomSelect.value = option.value;
+        found = true;
+        break;
+      }
+    }
+    if (!found) classroomSelect.value = '';
+  }
+  
+  departmentSelect.addEventListener('change', filterClassrooms);
+  filterClassrooms();
+</script>
+<script>
+  const departmentSelectModal = document.getElementById('departmentSelectModal');
+  const classroomSelectModal = document.getElementById('classroomIdModal');
+  
+  function filterClassrooms() {
+    // استخدام المتغير الصحيح هنا
+    const selectedDept = departmentSelectModal.value;
+    for (let i = 0; i < classroomSelectModal.options.length; i++) {
+      const option = classroomSelectModal.options[i];
+      if (!option.value) continue; // تخطي الخيار الافتراضي
+      option.style.display = (option.getAttribute('data-department') === selectedDept) ? 'block' : 'none';
+    }
+    // اختيار الخيار الأول الظاهر تلقائياً (اختياري)
+    let found = false;
+    for (let i = 0; i < classroomSelectModal.options.length; i++) {
+      const option = classroomSelectModal.options[i];
+      if (option.style.display === 'block' && option.value) {
+        classroomSelectModal.value = option.value;
+        found = true;
+        break;
+      }
+    }
+    if (!found) classroomSelectModal.value = '';
+  }
+  
+  // استخدام المتغير الصحيح هنا أيضاً
+  departmentSelectModal.addEventListener('change', filterClassrooms);
+  filterClassrooms();
+</script>
+
+<!-- تضمين Grid.js -->
+<link href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css" rel="stylesheet" />
+<script src="https://unpkg.com/gridjs/dist/gridjs.umd.js"></script>
+
+<script>
+    // تجهيز بيانات الأعضاء باستخدام المتغير server-side (members)
+    const membersData = <%- JSON.stringify(members.map((member, index) => ({
+      index: index + 1,
+      name: member.name,
+      mobile: member.mobile,
+       date: new Date(member.date).toLocaleDateString(),
+
+       invoice: member.invoice.length 
+      ? '<button class="btn btn-secondary view-invoices" data-member=\'' + JSON.stringify(member) + '\'>' +
+          'عرض الفواتير (' + member.invoice.length + ')' +
+        '</button>'
+      : 'لا توجد فواتير',
+    // عمود الإجراءات يحتوي على زرين: "إضافة فاتورة" و"حذف"
+    actions: '<button class="btn btn-success add-invoice" data-member=\'' + JSON.stringify(member) + '\'>' +
+               'إضافة فاتورة' +
+             '</button> ' +
+             '<a class="btn btn-danger" href="/admin/delete-member/' + member._id + '" onclick="return confirm(\'هل أنت متأكد من حذف هذا العضو؟\')">حذف</a>'
+  }))) %>;
+
+  
+    new gridjs.Grid({
+      columns: [
+        { id: 'index', name: 'رقم' },
+        { id: 'name', name: 'أسم العضو' },
+        { id: 'mobile', name: 'رقم الجوال' },
+        { id: 'date', name: 'تاريخ الانضمام' },
+        { id: 'invoice', name: 'الفواتير', formatter: (cell) => gridjs.html(cell) },
+        { id: 'actions', name: 'الإجراءات', formatter: (cell) => gridjs.html(cell) }
+      ],
+      data: membersData,
+      sort: true,
+      search: true,
+      pagination: {
+        enabled: true,
+        limit: 10
+      }
+    }).render(document.getElementById("members-grid"));
+  </script>
+  <script>
+
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    document.body.addEventListener('click', function(event) {
+      if (event.target.classList.contains('view-invoices')) {
+        const memberData = JSON.parse(event.target.getAttribute('data-member'));
+        const invoiceTableBody = document.getElementById('invoiceTableBody');
+        const invoiceMemberName = document.getElementById('invoiceMemberName');
+  
+        invoiceMemberName.textContent = memberData.name;
+        invoiceTableBody.innerHTML = '';
+  
+        if (memberData.invoice.length > 0) {
+          memberData.invoice.forEach(invoice => {
+
+            console.log(invoice.classroom)
+            const row = `<tr>
+              <td>${invoice.invoiceNumber}</td>
+              <td>${invoice.classroom.department}</td>
+              <td>${invoice.classroom.name}</td>
+              <td>${new Date(invoice.date).toLocaleDateString()}</td>
+              <td>${invoice.active == true ? 'نشط' : 'منتهي'}</td>
+            </tr>`;
+            invoiceTableBody.innerHTML += row;
+          });
+        } else {
+          invoiceTableBody.innerHTML = '<tr><td colspan="4" class="text-center">لا توجد فواتير</td></tr>';
+        }
+  
+        // إظهار الـ Modal
+        new bootstrap.Modal(document.getElementById('invoiceModal')).show();
+      }
+    });
+  });
+
+
+  document.addEventListener('DOMContentLoaded', function() {
+    document.body.addEventListener('click', function(event) {
+      if (event.target.classList.contains('add-invoice')) {
+        const memberData = JSON.parse(event.target.getAttribute('data-member'));
+        // تعبئة الحقل المخفي بمعرف العضو
+        document.getElementById('invoiceMemberId').value = memberData._id;
+        // يمكن تحديث عنوان النموذج (Modal title) مثلاً
+        document.getElementById('addInvoiceModalLabel').textContent = 'إضافة فاتورة لعضو: ' + memberData.name;
+        new bootstrap.Modal(document.getElementById('addInvoiceModal')).show();
+      }
+    });
+  });
+
+</script>
+
+<!-- تضمين Bootstrap JS (يتطلب Popper) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<%- include('../partials/footer') %>

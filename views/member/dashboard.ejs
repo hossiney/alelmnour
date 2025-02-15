@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>العلم نور - المنصة التعليمية</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/member/style.css">
+
+    <style>
+        .lesson-badges {
+    margin-top: 10px;
+}
+
+.badge {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 0.8rem;
+    margin-right: 5px;
+}
+
+.badge.live {
+    background-color: #28a745; /* لون أخضر يمثل البث المباشر */
+}
+
+.badge.recorded {
+    background-color: #007bff; /* لون أزرق يمثل الدروس المسجلة */
+}
+
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">العلم نور</div>
+            <div class="nav-links">
+                <a href="/member/" class="active">القاعات الدراسية</a>
+            </div>
+        </nav>
+    </header>
+
+    <script>
+        // تجهيز بيانات الأعضاء باستخدام المتغير server-side (members)
+        const membersData = <%- JSON.stringify(member.invoice.map((invoice, index) => ({
+         
+            id: invoice._id,
+            title: invoice.classroom.name,
+            description: invoice.classroom.department,
+            subscriptionEnd: new Date(invoice.expirationDate).toLocaleDateString(),
+            status: invoice.active? "نشط":"منتهي",
+            type:invoice.classroom.hallType,
+            classroom: invoice.classroom
+      }))) %>;
+
+
+      </script>
+
+    <main>
+        <div class="container">
+            <h1>القاعات الدراسية المتاحة</h1>
+            <div class="classrooms-grid" id="classrooms">
+                <!-- Classrooms will be inserted here by JavaScript -->
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>جميع الحقوق محفوظة &copy; 2024 - العلم نور</p>
+    </footer>
+
+    <script src="/js/member/main.js"></script>
+</body>
+</html>

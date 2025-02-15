@@ -1,0 +1,812 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>العلم نور - منصة تعليمية متكاملة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+      :root {
+        --primary: #2563eb;
+        --secondary: #1e40af;
+        --white: #ffffff;
+        --gray-50: #f9fafb;
+        --gray-100: #f3f4f6;
+        --gray-300: #d1d5db;
+        --gray-600: #4b5563;
+        --gray-900: #111827;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: 'Cairo', sans-serif;
+        line-height: 1.5;
+        color: var(--gray-900);
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1rem;
+      }
+
+      /* Header Navigation */
+      header {
+        background: var(--white);
+        padding: 0.5rem 0;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      }
+      header nav {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+      }
+      header nav a {
+        margin-left: 1rem;
+      }
+
+      /* Hero Section */
+      .hero-gradient {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        padding: 4rem 0;
+      }
+
+      .hero-content {
+        text-align: center;
+        color: var(--white);
+      }
+
+      .hero-content h1 {
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+      }
+
+      .hero-subtitle {
+        font-size: 1.25rem;
+        margin-bottom: 2rem;
+      }
+
+      .hero-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      /* Buttons */
+      .btn {
+        display: inline-block;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.2s;
+      }
+
+      .btn-white {
+        background: var(--white);
+        color: var(--primary);
+      }
+
+      .btn-white:hover {
+        background: rgba(255, 255, 255, 0.9);
+      }
+
+      .btn-outline {
+        border: 2px solid var(--white);
+        color: var(--white);
+      }
+
+      .btn-outline:hover {
+        background: var(--white);
+        color: var(--primary);
+      }
+
+      .btn-primary {
+        background: var(--primary);
+        color: var(--white);
+        border: none;
+        width: 100%;
+        cursor: pointer;
+      }
+
+      .btn-primary:hover {
+        background: var(--secondary);
+      }
+
+      /* Sections */
+      .section {
+        padding: 4rem 0;
+      }
+
+      .section-title {
+        font-size: 1.875rem;
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 3rem;
+      }
+
+      /* Features */
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+        gap: 2rem;
+      }
+
+      @media (min-width: 768px) {
+        .features-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      @media (min-width: 1024px) {
+        .features-grid {
+          grid-template-columns: repeat(4, 1fr);
+        }
+      }
+
+      .feature-card {
+        text-align: center;
+        padding: 1.5rem;
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        background: var(--white);
+      }
+
+      .feature-icon {
+        width: 3rem;
+        height: 3rem;
+        color: var(--primary);
+        margin-bottom: 1rem;
+      }
+
+      .feature-card h3 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+      }
+
+      .feature-card p {
+        color: var(--gray-600);
+      }
+
+      /* Courses */
+      .courses-grid {
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+        gap: 2rem;
+      }
+
+      @media (min-width: 768px) {
+        .courses-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      @media (min-width: 1024px) {
+        .courses-grid {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+
+      .course-card {
+        background: var(--white);
+        border-radius: 0.5rem;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s;
+      }
+
+      .course-card:hover {
+        transform: translateY(-4px);
+      }
+
+      .course-image {
+        position: relative;
+        height: 200px;
+      }
+
+      .course-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .course-badge {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: var(--primary);
+        color: var(--white);
+        padding: 0.25rem 0.75rem;
+        border-radius: 1rem;
+        font-size: 0.875rem;
+      }
+
+      .course-content {
+        padding: 1.5rem;
+      }
+
+      .course-content h3 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+      }
+
+      .course-content p {
+        color: var(--gray-600);
+        margin-bottom: 1rem;
+      }
+
+      .course-meta {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1rem;
+        color: var(--gray-600);
+        font-size: 0.875rem;
+      }
+
+      .course-meta span {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+      }
+
+      .course-icon {
+        width: 1rem;
+        height: 1rem;
+      }
+
+      .course-price {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      /* السعر العادي بدون خصم */
+      .course-price .price {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--primary);
+      }
+
+      /* تأثيرات السعر للخصم */
+      .course-price .old-price {
+        text-decoration: line-through;
+        color: var(--gray-600);
+        margin-right: 0.5rem;
+        font-size: 1rem;
+      }
+      .course-price .new-price {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--primary);
+      }
+
+      /* FAQ */
+      .faq-container {
+        max-width: 48rem;
+        margin: 0 auto;
+      }
+
+      .faq-item {
+        border-bottom: 1px solid var(--gray-300);
+      }
+
+      .faq-question {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.5rem 0;
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 1.125rem;
+        font-weight: 500;
+        text-align: right;
+      }
+
+      .faq-icon {
+        width: 1.5rem;
+        height: 1.5rem;
+        transition: transform 0.2s;
+      }
+
+      .faq-item.active .faq-icon {
+        transform: rotate(180deg);
+      }
+
+      .faq-answer {
+        padding: 0;
+        max-height: 0;
+        overflow: hidden;
+        transition: all 0.3s ease-in-out;
+      }
+
+      .faq-item.active .faq-answer {
+        padding: 0 0 1.5rem 0;
+        max-height: 1000px;
+      }
+
+      /* Mobile Apps */
+      .apps-container {
+        text-align: center;
+      }
+
+      .app-screenshot {
+        width: 300px;
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin-bottom: 1.5rem;
+      }
+
+      .app-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+      }
+
+      .app-store-button img {
+        height: 3rem;
+        transition: transform 0.2s;
+      }
+
+      .app-store-button:hover img {
+        transform: translateY(-2px);
+      }
+
+      /* Contact */
+      .contact-container {
+        max-width: 48rem;
+        margin: 0 auto;
+      }
+
+      .contact-info {
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+        gap: 2rem;
+        margin-bottom: 3rem;
+      }
+
+      @media (min-width: 768px) {
+        .contact-info {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+
+      .contact-item {
+        text-align: center;
+      }
+
+      .contact-icon {
+        width: 2rem;
+        height: 2rem;
+        color: var(--primary);
+        margin-bottom: 1rem;
+      }
+
+      .contact-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+
+      .form-group input,
+      .form-group textarea {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid var(--gray-300);
+        border-radius: 0.5rem;
+        font-family: 'Cairo', sans-serif;
+      }
+
+      .form-group input:focus,
+      .form-group textarea:focus {
+        outline: none;
+        border-color: var(--primary);
+      }
+
+      /* Footer */
+      .footer {
+        background: var(--gray-900);
+        color: var(--white);
+        padding: 2rem 0;
+        text-align: center;
+      }
+
+      /* WhatsApp Support Button */
+      .whatsapp-button {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background-color: #25D366;
+        color: var(--white);
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        text-decoration: none;
+        z-index: 1000;
+      }
+      .whatsapp-button:hover {
+        background-color: #128C7E;
+      }
+    </style>
+    <script src="https://unpkg.com/lucide@latest"></script>
+  </head>
+  <body>
+    <div class="min-h-screen bg-gray-50">
+      <!-- Header with Login Links -->
+      <header>
+        <div class="container">
+          <nav>
+            <a href="/member/login" class="btn btn-white">تسجيل دخول الأعضاء</a>
+            <a href="/admin/login" class="btn btn-white">تسجيل دخول المدير</a>
+          </nav>
+        </div>
+      </header>
+
+      <!-- Hero Section -->
+      <div class="hero-gradient text-white">
+        <div class="container">
+          <div class="hero-content">
+            <h1>العلم نور</h1>
+            <p class="hero-subtitle">منصة تعليمية متكاملة للتعلم عن بعد</p>
+            <div class="hero-buttons">
+              <a href="#courses" class="btn btn-white">تصفح الدورات</a>
+              <a href="#contact" class="btn btn-outline">تواصل معنا</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Features -->
+      <div class="section bg-white">
+        <div class="container">
+          <h2 class="section-title">مميزات المنصة</h2>
+          <div class="features-grid">
+            <div class="feature-card">
+              <i data-lucide="book-open" class="feature-icon"></i>
+              <h3>دورات متنوعة</h3>
+              <p>مجموعة واسعة من الدورات في مختلف المجالات</p>
+            </div>
+            <div class="feature-card">
+              <i data-lucide="video" class="feature-icon"></i>
+              <h3>دروس مسجلة</h3>
+              <p>تعلم في أي وقت ومن أي مكان</p>
+            </div>
+            <div class="feature-card">
+              <i data-lucide="graduation-cap" class="feature-icon"></i>
+              <h3>اختبارات محاكيه</h3>
+              <p>اختبارات لكل محاضرة</p>
+            </div>
+            <div class="feature-card">
+              <i data-lucide="users" class="feature-icon"></i>
+              <h3>دعم مباشر</h3>
+              <p>تواصل مع المدربين والطلاب</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Courses Section -->
+      <div id="courses" class="section bg-gray-100">
+        <div class="container">
+          <h2 class="section-title">الدورات المتاحة</h2>
+          <div class="courses-grid">
+            <!-- دورة القدرات مباشر ومسجل -->
+            <div class="course-card">
+              <div class="course-image">
+                <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=800" alt="دورة القدرات" />
+                <span class="course-badge">مباشر ومسجل</span>
+              </div>
+              <div class="course-content">
+                <h3>دورة القدرات مباشر ومسجل</h3>
+                <p>هذا المنتج يتيح لك الاشتراك في الدورة كاملة، حيث ستكتسب خبرة ومعرفة كبيرة لفهم اختبار القدرات بشكل واضح وتحقيق درجات مرتفعة.</p>
+                <div class="course-meta">
+                  <span><i data-lucide="users" class="course-icon"></i> بث مباشر</span>
+                  <span><i data-lucide="file-check" class="course-icon"></i> اختبارات</span>
+                </div>
+                <div class="course-price">
+                  <span class="price">٣٢٥ ر.س</span>
+                  <a href="#" class="btn btn-primary">اشترك الآن</a>
+                </div>
+              </div>
+            </div>
+
+            <!-- دورة قدرات مسجلة -->
+            <div class="course-card">
+              <div class="course-image">
+                <img src="https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?auto=format&fit=crop&w=800" alt="دورة قدرات مسجلة" />
+                <span class="course-badge">مسجل</span>
+              </div>
+              <div class="course-content">
+                <h3>دورة قدرات مسجلة</h3>
+                <p>محاضرات مسجلة بالكامل مع اختبارات إلكترونية تتيح لك اختبار نفسك بعد مشاهدة كل محاضرة.</p>
+                <div class="course-meta">
+                  <span><i data-lucide="video" class="course-icon"></i> محاضرات مسجلة</span>
+                  <span><i data-lucide="infinity" class="course-icon"></i> مشاهدات غير محدودة</span>
+                </div>
+                <div class="course-price">
+                  <span class="price">١١٠ ر.س</span>
+                  <a href="#" class="btn btn-primary">اشترك الآن</a>
+                </div>
+              </div>
+            </div>
+
+            <!-- دورة تأسيس إنجليزي (سعرين مع خصم) -->
+            <div class="course-card">
+              <div class="course-image">
+                <img src="https://images.unsplash.com/photo-1546410531-bb4caa6b424d?auto=format&fit=crop&w=800" alt="دورة تأسيس إنجليزي" />
+                <span class="course-badge">مباشر</span>
+              </div>
+              <div class="course-content">
+                <h3>دورة تأسيس إنجليزي</h3>
+                <p>تعليم مبسط وعالي الجودة في اللغة الإنجليزية، مع بث مباشر يتيح لك التفاعل مع المعلم.</p>
+                <div class="course-meta">
+                  <span><i data-lucide="users" class="course-icon"></i> بث مباشر</span>
+                  <span><i data-lucide="message-circle" class="course-icon"></i> تفاعل مباشر</span>
+                </div>
+                <div class="course-price">
+                  <span class="new-price">٤٠٠ ر.س</span>
+                  <a href="#" class="btn btn-primary">اشترك الآن</a>
+                </div>
+              </div>
+            </div>
+
+            <!-- دورة التحصيلي مباشر ومسجل -->
+            <div class="course-card">
+              <div class="course-image">
+                <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=800" alt="دورة التحصيلي" />
+                <span class="course-badge">مباشر ومسجل</span>
+              </div>
+              <div class="course-content">
+                <h3>دورة التحصيلي مباشر ومسجل</h3>
+                <p>معلمين متخصصين لتدريس اختبار التحصيلي مع بث مباشر للمحاضرات واختبارات محاكاة.</p>
+                <div class="course-meta">
+                  <span><i data-lucide="users" class="course-icon"></i> بث مباشر</span>
+                  <span><i data-lucide="file-check" class="course-icon"></i> اختبارات محاكاة</span>
+                </div>
+                <div class="course-price">
+                  <span class="price">٤٠٠ ر.س</span>
+                  <a href="#" class="btn btn-primary">اشترك الآن</a>
+                </div>
+              </div>
+            </div>
+
+            <!-- دورة تحصيلي مسجلة -->
+            <div class="course-card">
+              <div class="course-image">
+                <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=800" alt="دورة تحصيلي مسجلة" />
+                <span class="course-badge">مسجل</span>
+              </div>
+              <div class="course-content">
+                <h3>دورة تحصيلي مسجلة</h3>
+                <p>أكثر من ثلاثين محاضرة مسجلة تشمل جميع أقسام اختبار التحصيلي مع اختبارات إلكترونية.</p>
+                <div class="course-meta">
+                  <span><i data-lucide="video" class="course-icon"></i> ٣٠+ محاضرة</span>
+                  <span><i data-lucide="infinity" class="course-icon"></i> مشاهدات غير محدودة</span>
+                </div>
+                <div class="course-price">
+                  <span class="price">١٦٠ ر.س</span>
+                  <a href="#" class="btn btn-primary">اشترك الآن</a>
+                </div>
+              </div>
+            </div>
+
+            <!-- دورة ستيب (سعرين مع خصم) -->
+            <div class="course-card">
+              <div class="course-image">
+                <img src="https://images.unsplash.com/photo-1517842645767-c639042777db?auto=format&fit=crop&w=800" alt="دورة ستيب" />
+                <span class="course-badge">مباشر ومسجل</span>
+              </div>
+              <div class="course-content">
+                <h3>دورة ستيب</h3>
+                <p>دورة متكاملة لرفع درجتك في اختبار ستيب المطلوب في أرامكو وكليات الضباط والابتعاث.</p>
+                <div class="course-meta">
+                  <span><i data-lucide="users" class="course-icon"></i> بث مباشر</span>
+                  <span><i data-lucide="file-check" class="course-icon"></i> اختبارات محاكاة</span>
+                </div>
+                <div class="course-price">
+                  <span class="new-price">٤٠٠ ر.س</span>
+                  <a href="#" class="btn btn-primary">اشترك الآن</a>
+                </div>
+              </div>
+            </div>
+
+            <!-- دورة آيلتس (سعرين مع خصم) -->
+            <div class="course-card">
+              <div class="course-image">
+                <img src="https://images.unsplash.com/photo-1516979187457-637abb4f9353?auto=format&fit=crop&w=800" alt="دورة آيلتس" />
+                <span class="course-badge">مباشر ومسجل</span>
+              </div>
+              <div class="course-content">
+                <h3>دورة آيلتس</h3>
+                <p>إعداد شامل لاختبار الآيلتس مع معلمين متخصصين واختبارات محاكاة مبنية على أسئلة سابقة.</p>
+                <div class="course-meta">
+                  <span><i data-lucide="users" class="course-icon"></i> بث مباشر</span>
+                  <span><i data-lucide="file-check" class="course-icon"></i> اختبارات محاكاة</span>
+                </div>
+                <div class="course-price">
+                  <span class="new-price">٤٠٠ ر.س</span>
+                  <a href="#" class="btn btn-primary">اشترك الآن</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="section bg-white">
+        <div class="container">
+          <h2 class="section-title">الأسئلة الشائعة</h2>
+          <div class="faq-container">
+            <div class="faq-item">
+              <button class="faq-question">
+                <span>كيف يمكنني الاشتراك في الدورات؟</span>
+                <i data-lucide="chevron-down" class="faq-icon"></i>
+              </button>
+              <div class="faq-answer">
+                <p>يمكنك الاشتراك في أي دورة من خلال الضغط على زر "اشترك الآن" وإكمال عملية الدفع. بعد ذلك، ستتمكن من الوصول إلى محتوى الدورة مباشرة.</p>
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <button class="faq-question">
+                <span>ما الفرق بين الدورات المباشرة والمسجلة؟</span>
+                <i data-lucide="chevron-down" class="faq-icon"></i>
+              </button>
+              <div class="faq-answer">
+                <p>الدورات المباشرة تتيح لك التفاعل مباشرة مع المعلم وطرح الأسئلة أثناء المحاضرة، بينما الدورات المسجلة تمكنك من الدراسة في أي وقت يناسبك مع إمكانية إعادة المشاهدة بشكل غير محدود.</p>
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <button class="faq-question">
+                <span>هل يمكنني تقسيط المبلغ؟</span>
+                <i data-lucide="chevron-down" class="faq-icon"></i>
+              </button>
+              <div class="faq-answer">
+                <p>نعم، نوفر خيارات تقسيط مرنة للدورات. يرجى التواصل مع خدمة العملاء لمعرفة التفاصيل.</p>
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <button class="faq-question">
+                <span>ما هي سياسة استرداد المبلغ؟</span>
+                <i data-lucide="chevron-down" class="faq-icon"></i>
+              </button>
+              <div class="faq-answer">
+                <p>نقدم ضمان استرداد المبلغ خلال 3 أيام من تاريخ الشراء إذا لم تكن راضياً عن محتوى الدورة.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile Apps -->
+      <div class="section bg-gray-100">
+        <div class="container">
+          <h2 class="section-title">تطبيقات الجوال</h2>
+          <div class="apps-container">
+            <div class="app-preview">
+              <img 
+                src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&w=500"
+                alt="تطبيق العلم نور"
+                class="app-screenshot"
+              />
+              <div class="app-buttons">
+                <a href="#" class="app-store-button">
+                  <img 
+                    src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg"
+                    alt="App Store"
+                  />
+                </a>
+                <a href="#" class="app-store-button">
+                  <img 
+                    src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg"
+                    alt="Google Play"
+                  />
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact Section -->
+      <div id="contact" class="section bg-white">
+        <div class="container">
+          <h2 class="section-title">تواصل معنا</h2>
+          <div class="contact-container">
+            <div class="contact-info">
+              <div class="contact-item">
+                <i data-lucide="phone" class="contact-icon"></i>
+                <p>+966 XX XXX XXXX</p>
+              </div>
+              <div class="contact-item">
+                <i data-lucide="mail" class="contact-icon"></i>
+                <p>info@example.com</p>
+              </div>
+              <div class="contact-item">
+                <i data-lucide="globe" class="contact-icon"></i>
+                <p>www.example.com</p>
+              </div>
+            </div>
+            <form id="contactForm" class="contact-form">
+              <div class="form-group">
+                <input type="text" placeholder="الاسم" required>
+              </div>
+              <div class="form-group">
+                <input type="email" placeholder="البريد الإلكتروني" required>
+              </div>
+              <div class="form-group">
+                <textarea placeholder="الرسالة" rows="4" required></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary">إرسال</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      
+      <!-- WhatsApp Support Button -->
+      <a href="https://wa.me/966XXXXXXXXX" class="whatsapp-button" target="_blank" rel="noopener noreferrer" title="تواصل معنا عبر واتساب">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="message-circle">
+          <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"></path>
+        </svg>
+      </a>
+
+      <!-- Footer -->
+      <footer class="footer">
+        <div class="container">
+          <p>جميع الحقوق محفوظة © <span id="year"></span> - العلم نور</p>
+        </div>
+      </footer>
+    </div>
+
+    <script>
+    // Initialize Lucide icons
+lucide.createIcons();
+
+// Update footer year
+document.getElementById('year').textContent = new Date().getFullYear();
+
+// Handle FAQ toggles
+document.querySelectorAll('.faq-question').forEach(button => {
+  button.addEventListener('click', () => {
+    const faqItem = button.parentElement;
+    const isActive = faqItem.classList.contains('active');
+    
+    // Close all FAQ items
+    document.querySelectorAll('.faq-item').forEach(item => {
+      item.classList.remove('active');
+    });
+    
+    // Open clicked item if it wasn't active
+    if (!isActive) {
+      faqItem.classList.add('active');
+    }
+  });
+});
+
+// Handle contact form submission
+document.getElementById('contactForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  // Add your form submission logic here
+  alert('تم إرسال الرسالة بنجاح!');
+  this.reset();
+});
+    </script>
+  </body>
+</html>

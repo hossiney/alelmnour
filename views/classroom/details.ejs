@@ -1,0 +1,127 @@
+<%- include('../partials/header') %>
+
+<!-- تحميل Bootstrap CSS وملفات أخرى -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- FontAwesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+<link href="https://fonts.googleapis.com/css?family=Cairo&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+<!-- تحميل Grid.js CSS -->
+<link href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css" rel="stylesheet" />
+<!-- تحميل Bootstrap JS Bundle (يشمل Popper) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <br>
+    <!-- المحتوى الرئيسي -->
+    <main class="col-md-12 p-4">
+      <h2>تفاصيل القاعة الدراسية: <%= classroom.name %></h2>
+      <p><strong>القسم:</strong> <%= classroom.department %></p>
+      <p><strong>نوع القاعة:</strong> <%= classroom.hallType %></p>
+      <p><strong>رابط الاجتماع:</strong> <a href="<%= classroom.onlineMeetingLink %>" target="_blank">اضغط هنا</a></p>
+      
+      <hr>
+      <h3>الدروس المسجلة</h3>
+      <!-- زر فتح المودال لإضافة درس جديد -->
+      <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addLessonModal">
+        إضافة درس جديد
+      </button>
+      
+      <!-- منطقة عرض الجدول باستخدام Grid.js -->
+      <div id="gridjs-lessons"></div>
+      
+      <!-- تحميل Grid.js JS -->
+      <script src="https://unpkg.com/gridjs/dist/gridjs.umd.js"></script>
+      <script>
+        new gridjs.Grid({
+          columns: [
+            { id: 'name', name: 'اسم الدرس' },
+            { id: 'publishedAt', name: 'تاريخ النشر' },
+            { 
+              id: 'videoLink', 
+              name: 'رابط الفيديو',
+              formatter: (cell) => gridjs.html(cell)
+            },
+            { 
+              id: 'officeForm', 
+              name: 'اختبار (Office Form)',
+              formatter: (cell) => gridjs.html(cell)
+            },
+            { 
+              id: 'actions', 
+              name: 'الإجراءات',
+              formatter: (cell) => gridjs.html(cell)
+            }
+          ],
+          data: [
+            <% lessons.map(function(lesson,index) { %>
+              {
+                name: '<%= lesson.name %>',
+                publishedAt: '<%= lesson.publishedAt.toLocaleDateString() %>',
+                videoLink: '<a href="<%= lesson.videoLink %>" target="_blank">مشاهدة الفيديو</a>',
+                officeForm: `<% if (lesson.officeFormLink) { %>
+                                <a href="<%= lesson.officeFormLink %>" target="_blank">اختبار</a>
+                              <% } else { %>
+                                لا يوجد اختبار
+                              <% } %>`,
+                actions: '<a href="/admin/classroom/<%= classroom._id %>/delete-lesson/<%= lesson._id %>" onclick="return confirm(\'هل أنت متأكد من حذف هذا الدرس؟\')">حذف الدرس</a>'
+              },
+            <% }); %>
+          ],
+          search: {
+            placeholder: 'بحث...'
+          },
+          pagination: {
+            enabled: true,
+            limit: 5
+          },
+          sort: true,
+          language: {
+            pagination: {
+              previous: 'السابق',
+              next: 'التالي',
+              showing: 'عرض',
+              results: () => 'نتيجة'
+            }
+          }
+        }).render(document.getElementById("gridjs-lessons"));
+      </script>
+      
+    </main>
+
+<!-- Bootstrap Modal لنموذج إضافة درس جديد -->
+<div class="modal fade" id="addLessonModal" tabindex="-1" aria-labelledby="addLessonModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form action="/admin/classroom/<%= classroom._id %>/add-lesson" method="POST">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addLessonModalLabel">إضافة درس جديد</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="lessonName" class="form-label">اسم الدرس</label>
+            <input type="text" class="form-control" id="lessonName" name="lessonName" placeholder="أدخل اسم الدرس" required>
+          </div>
+          <div class="mb-3">
+            <label for="publishedAt" class="form-label">تاريخ النشر</label>
+            <input type="date" class="form-control" id="publishedAt" name="publishedAt" required>
+          </div>
+          <div class="mb-3">
+            <label for="videoLink" class="form-label">رابط الفيديو</label>
+            <input type="text" class="form-control" id="videoLink" name="videoLink" placeholder="أدخل رابط الفيديو" required>
+          </div>
+          <div class="mb-3">
+            <label for="officeFormLink" class="form-label">رابط اختبار (Office Form)</label>
+            <input type="text" class="form-control" id="officeFormLink" name="officeFormLink" placeholder="أدخل رابط الاختبار (اختياري)">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+          <button type="submit" class="btn btn-primary">إضافة الدرس</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,34 @@
+<!-- views/partials/header.ejs -->
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="موقع العلم نور لتسجيل دخول المدير والأعضاء وإدارة القاعات الدراسية">
+    <meta name="keywords" content="العلم, نور, تسجيل دخول, أعضاء, مدير, قاعات دراسية">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <!-- استدعاء خط Cairo -->
+    <link href="https://fonts.googleapis.com/css?family=Cairo&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header>
+        <h1>العلم نور</h1>
+        <nav>
+            <ul>
+                <%  try{%>
+                    <% if (logged ) { %>  <!-- يظهر فقط إذا كان المستخدم مسجلاً -->
+                        <li><a href="/">الرئيسية</a></li>
+                        <li><a href="/admin/dashboard">لوحة التحكم</a></li>
+                        <li><a href="/admin/classroom">إدارة القاعات</a></li>
+                        <li><a href="/admin/invoice">إدارة الفواتير</a></li>
+                        <li><a href="/admin/logout">تسجيل الخروج</a></li>
+                    <% } %>
+
+                    <%   }catch(e){%> 
+
+                        <%  }%> 
+                
+            </ul>
+        </nav>
+    </header>

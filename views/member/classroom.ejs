@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>القاعة الدراسية - العلم نور</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/member/style.css">
+</head>
+<body class="classroom-page">
+    <header>
+        <nav>
+            <div class="logo">العلم نور</div>
+            <div class="nav-links">
+                <a href="/member/dashboard">القاعات الدراسية</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="classroom-layout">
+        <aside class="lessons-sidebar">
+            <h2 id="classroom-title">عنوان القاعة</h2>
+            <div class="lessons-list" id="lessons-list">
+                <!-- Lessons will be inserted here by JavaScript -->
+            </div>
+        </aside>
+
+        <section class="lesson-content">
+            <div id="lesson-container">
+                <h3 id="lesson-title">اختر درساً من القائمة</h3>
+                <div class="video-container" id="video-container">
+                    <!-- Video will be inserted here by JavaScript -->
+                </div>
+                <div class="quiz-button-container">
+                    <button id="quiz-button" class="quiz-button" style="display: none;">
+                        اختبار الدرس
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+    <script>
+const lessons = <%- JSON.stringify(lessons) %>;
+
+console.log(lessons);
+
+    </script>
+
+    <footer>
+        <p>جميع الحقوق محفوظة &copy; 2024 - العلم نور</p>
+    </footer>
+
+    <script src="/js/member/classroom.js"></script>
+</body>
+</html>

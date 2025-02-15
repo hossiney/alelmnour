@@ -1,0 +1,20 @@
+<!-- views/admin/login.ejs -->
+<%- include('../partials/header') %>
+<div class="container">
+    <h2>تسجيل دخول المدير</h2>
+    <% if(error) { %>
+        <div class="error"><%= error %></div>
+    <% } %>
+    <form action="/admin/login" method="POST">
+        <div class="form-group">
+            <label for="email">البريد الإلكتروني:</label>
+            <input type="email" id="email" name="email" required placeholder="أدخل بريدك الإلكتروني">
+        </div>
+        <div class="form-group">
+            <label for="password">كلمة المرور:</label>
+            <input type="password" id="password" name="password" required placeholder="أدخل كلمة المرور">
+        </div>
+        <button type="submit">تسجيل الدخول</button>
+    </form>
+</div>
+<%- include('../partials/footer') %>

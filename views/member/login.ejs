@@ -1,0 +1,20 @@
+<!-- views/member/login.ejs -->
+<%- include('../partials/header') %>
+<div class="container">
+    <h2>تسجيل دخول الأعضاء</h2>
+    <% if(error) { %>
+        <div class="error"><%= error %></div>
+    <% } %>
+    <form action="/member/login" method="POST">
+        <div class="form-group">
+            <label for="mobile">رقم الجوال:</label>
+            <input type="text" id="mobile" name="mobile" required placeholder="أدخل رقم الجوال">
+        </div>
+        <div class="form-group">
+            <label for="invoice">رقم الفاتورة:</label>
+            <input type="text" id="invoice" name="invoice" required placeholder="أدخل رقم الفاتورة">
+        </div>
+        <button type="submit">تسجيل الدخول</button>
+    </form>
+</div>
+<%- include('../partials/footer') %>

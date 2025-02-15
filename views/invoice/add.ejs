@@ -1,0 +1,31 @@
+<%- include('../partials/header') %>
+<div class="container">
+  <h2>إضافة فاتورة جديدة</h2>
+  <% if (error) { %>
+    <div class="error"><%= error %></div>
+  <% } %>
+  <form action="/invoice/add" method="POST">
+    <div class="form-group">
+      <label for="invoiceNumber">رقم الفاتورة:</label>
+      <input type="text" id="invoiceNumber" name="invoiceNumber" required placeholder="أدخل رقم الفاتورة">
+    </div>
+    <div class="form-group">
+      <label for="memberMobile">رقم الجوال:</label>
+      <input type="text" id="memberMobile" name="memberMobile" required placeholder="أدخل رقم الجوال">
+    </div>
+    <div class="form-group">
+      <label for="classroomId">القاعة الدراسية:</label>
+      <select id="classroomId" name="classroomId" required>
+        <% classrooms.forEach(function(classroom) { %>
+          <option value="<%= classroom._id %>"><%= classroom.name %> - <%= classroom.department %></option>
+        <% }); %>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="expirationDate">تاريخ الانتهاء:</label>
+      <input type="date" id="expirationDate" name="expirationDate" required>
+    </div>
+    <button type="submit">إضافة الفاتورة</button>
+  </form>
+</div>
+<%- include('../partials/footer') %>

@@ -1,0 +1,27 @@
+<%- include('../partials/header') %>
+<div class="container">
+  <h2>إضافة درس جديد إلى القاعة: <%= classroom.name %></h2>
+  <% if (error) { %>
+    <div class="error"><%= error %></div>
+  <% } %>
+  <form action="/classroom/<%= classroom._id %>/add-lesson" method="POST">
+    <div class="form-group">
+      <label for="lessonName">اسم الدرس:</label>
+      <input type="text" id="lessonName" name="lessonName" required placeholder="أدخل اسم الدرس">
+    </div>
+    <div class="form-group">
+      <label for="videoLink">رابط الفيديو:</label>
+      <input type="text" id="videoLink" name="videoLink" required placeholder="أدخل رابط الفيديو">
+    </div>
+    <div class="form-group">
+      <label for="publishedAt">تاريخ النشر:</label>
+      <input type="date" id="publishedAt" name="publishedAt">
+    </div>
+    <div class="form-group">
+      <label for="officeFormLink">رابط اختبار Office Form:</label>
+      <input type="text" id="officeFormLink" name="officeFormLink" placeholder="أدخل رابط الاختبار (Office Form)">
+    </div>
+    <button type="submit">إضافة الدرس</button>
+  </form>
+</div>
+<%- include('../partials/footer') %>
