@@ -7,7 +7,8 @@ const Admin = require('./models/Admin');
 const cookieParser = require('cookie-parser');
 const fs = require('fs');
 // إعدادات الميدلوير لتحليل بيانات النماذج
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
+
 app.use(express.json());
 
 // تعيين مجلد public للملفات الثابتة (CSS، JS، الصور، …)

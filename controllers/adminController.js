@@ -231,24 +231,38 @@ exports.getAddClassroom = (req, res) => {
   // معالجة إضافة درس جديد للقاعة الدراسية (يتم إنشاء سجل في جدول Lesson)
   exports.postAddLessonClassroom = async (req, res) => {
     const { id } = req.params; // معرف القاعة
-    const { lessonName, videoLink, publishedAt, officeFormLink } = req.body;
+    const { lessonName, videoLink, publishedAt, officeFormLinks } = req.body; // تعديل الاسم لاستقبال المصفوفة
+  
+    console.log(officeFormLinks)
     try {
       const classroom = await Classroom.findById(id);
       if (!classroom) {
         return res.send('القاعة الدراسية غير موجودة');
       }
+  
+      // تأكد من أن officeFormLinks هو مصفوفة (في حالة لم يتم إدخال أي روابط)
+      const formattedOfficeFormLinks = Array.isArray(officeFormLinks)
+        ? officeFormLinks.filter(link => link.trim() !== '') // إزالة الروابط الفارغة
+        : [];
+  
       const newLesson = new Lesson({
         name: lessonName,
         videoLink,
         publishedAt: publishedAt ? new Date(publishedAt) : Date.now(),
-        officeFormLink,
+        officeFormLinks: formattedOfficeFormLinks, // تعديل الحقل ليكون مصفوفة
         classroom: id
       });
+  
       await newLesson.save();
       res.redirect('/admin/classroom/' + id);
     } catch (error) {
       console.error(error);
-      res.render('classroom/addLesson', { logged:true,title: 'إضافة درس - العلم نور', classroom: { _id: id }, error: 'حدث خطأ أثناء إضافة الدرس' });
+      res.render('classroom/addLesson', {
+        logged: true,
+        title: 'إضافة درس - العلم نور',
+        classroom: { _id: id },
+        error: 'حدث خطأ أثناء إضافة الدرس'
+      });
     }
   };
   

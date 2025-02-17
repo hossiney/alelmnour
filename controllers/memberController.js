@@ -123,7 +123,7 @@ exports.getClassroom = async (req, res) => {
                     id: index + 1, // يمكن استخدام lesson._id.toString() إذا أردت معرف فريد
                     title: lesson.name,
                     videoUrl: lesson.videoLink,
-                    quizUrl: lesson.officeFormLink
+                    quizUrl: lesson.officeFormLinks
                 }))
             }
         };

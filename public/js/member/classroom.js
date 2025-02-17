@@ -40,16 +40,26 @@ function loadLesson(lesson) {
         </video>
     `;
     
-    const quizButton = document.getElementById('quiz-button');
-    quizButton.style.display = 'inline-block';
-    quizButton.onclick = () => window.open(lesson.quizUrl, '_blank');
+    const quizButtonContainer = document.querySelector('.quiz-button-container');
+    quizButtonContainer.innerHTML = ''; // مسح الأزرار السابقة
+    
+    if (lesson.quizUrl && lesson.quizUrl.length > 0) {
+        lesson.quizUrl.forEach((link, index) => {
+            const button = document.createElement('button');
+            button.className = 'quiz-button';
+            button.textContent = `اختبار ${index + 1}`;
+            button.style.margin = '5px'; // إضافة مسافات بين الأزرار
+
+            button.onclick = () => window.open(link, '_blank');
+            quizButtonContainer.appendChild(button);
+        });
+    }
 }
 
 // Function to initialize the classroom page
 function initializeClassroomPage() {
     const classroomId = window.location.href.split('/member/classroom/')[1];
 
-    console.log(classroomsData[classroomId])
     if (!classroomId || !classroomsData[classroomId]) {
         window.location.replace = '/member/dashboard';
         return;

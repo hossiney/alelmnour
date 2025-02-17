@@ -32,11 +32,29 @@
       <!-- منطقة عرض الجدول باستخدام Grid.js -->
       <div id="gridjs-lessons"></div>
       
+      <!-- Bootstrap Modal -->
+<div class="modal fade" id="officeFormsModal" tabindex="-1" aria-labelledby="officeFormsModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="officeFormsModalLabel">روابط الاختبارات</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+      </div>
+      <div class="modal-body">
+        <ul id="officeFormsList" class="list-group"></ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+      </div>
+    </div>
+  </div>
+</div>
       <!-- تحميل Grid.js JS -->
       <script src="https://unpkg.com/gridjs/dist/gridjs.umd.js"></script>
       <script>
         new gridjs.Grid({
           columns: [
+
             { id: 'name', name: 'اسم الدرس' },
             { id: 'publishedAt', name: 'تاريخ النشر' },
             { 
@@ -45,10 +63,22 @@
               formatter: (cell) => gridjs.html(cell)
             },
             { 
-              id: 'officeForm', 
-              name: 'اختبار (Office Form)',
-              formatter: (cell) => gridjs.html(cell)
-            },
+        id: 'officeForm', 
+        name: 'روابط الاختبار',
+        formatter: (cell, row) => {
+
+          if (!cell || cell.length === 0) {
+            return gridjs.html('لا يوجد اختبار');
+          }
+          return gridjs.html(`
+  <button class="btn btn-primary btn-sm" onclick='showOfficeForms("${row._cells[0].data}","${cell}")'>
+    عرض الروابط
+  </button>
+`);
+
+
+        }
+      },
             { 
               id: 'actions', 
               name: 'الإجراءات',
@@ -61,11 +91,7 @@
                 name: '<%= lesson.name %>',
                 publishedAt: '<%= lesson.publishedAt.toLocaleDateString() %>',
                 videoLink: '<a href="<%= lesson.videoLink %>" target="_blank">مشاهدة الفيديو</a>',
-                officeForm: `<% if (lesson.officeFormLink) { %>
-                                <a href="<%= lesson.officeFormLink %>" target="_blank">اختبار</a>
-                              <% } else { %>
-                                لا يوجد اختبار
-                              <% } %>`,
+                officeForm:   '<%= lesson.officeFormLinks || [] %>',
                 actions: '<a href="/admin/classroom/<%= classroom._id %>/delete-lesson/<%= lesson._id %>" onclick="return confirm(\'هل أنت متأكد من حذف هذا الدرس؟\')">حذف الدرس</a>'
               },
             <% }); %>
@@ -89,6 +115,34 @@
         }).render(document.getElementById("gridjs-lessons"));
       </script>
       
+
+      <script>
+
+function showOfficeForms(lessonName, links) {
+
+    links = links.split(',');
+    
+    const modalTitle = document.getElementById('officeFormsModalLabel');
+    const modalBody = document.getElementById('officeFormsList');
+
+    modalTitle.innerText = `روابط الاختبارات لـ ${lessonName}`;
+    modalBody.innerHTML = '';
+
+    if (links.length === 0) {
+      modalBody.innerHTML = '<p class="text-muted">لا يوجد روابط اختبارات</p>';
+    } else {
+      links.forEach((link, index) => {
+        const listItem = document.createElement('li');
+        listItem.className = 'list-group-item';
+        listItem.innerHTML = `<a href="${link}" target="_blank">اختبار ${index + 1}</a>`;
+        modalBody.appendChild(listItem);
+      });
+    }
+
+    var modal = new bootstrap.Modal(document.getElementById('officeFormsModal'));
+    modal.show();
+  }
+      </script>
     </main>
 
 <!-- Bootstrap Modal لنموذج إضافة درس جديد -->
@@ -118,8 +172,14 @@
             <input type="hidden" id="videoLink" name="videoLink">
           </div>
           <div class="mb-3">
-            <label for="officeFormLink" class="form-label">رابط اختبار (Office Form)</label>
-            <input type="text" class="form-control" id="officeFormLink" name="officeFormLink" placeholder="أدخل رابط الاختبار (اختياري)">
+            <!-- <label for="officeFormLink" class="form-label">رابط اختبار (Office Form)</label> -->
+            <!-- <input type="text" class="form-control" id="officeFormLink" name="officeFormLink" placeholder="أدخل رابط الاختبار (اختياري)"> -->
+            <label class="form-label">روابط الاختبارات (Office Form)</label>
+            <input type="text" class="form-control mb-2" name="officeFormLinks[]" placeholder="اختبار 1 (اختياري)">
+            <input type="text" class="form-control mb-2" name="officeFormLinks[]" placeholder="اختبار 2 (اختياري)">
+            <input type="text" class="form-control mb-2" name="officeFormLinks[]" placeholder="اختبار 3 (اختياري)">
+            <input type="text" class="form-control" name="officeFormLinks[]" placeholder="اختبار 4 (اختياري)">
+
           </div>
         </div>
         <div class="modal-footer">
