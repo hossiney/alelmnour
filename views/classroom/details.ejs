@@ -10,6 +10,9 @@
 <link href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css" rel="stylesheet" />
 <!-- تحميل Bootstrap JS Bundle (يشمل Popper) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<link href="https://unpkg.com/filepond/dist/filepond.min.css" rel="stylesheet">
+<script src="https://unpkg.com/filepond/dist/filepond.min.js"></script>
+
 
   <br>
     <!-- المحتوى الرئيسي -->
@@ -106,9 +109,13 @@
             <label for="publishedAt" class="form-label">تاريخ النشر</label>
             <input type="date" class="form-control" id="publishedAt" name="publishedAt" required>
           </div>
+          <!-- File input using Filebond JS -->
           <div class="mb-3">
-            <label for="videoLink" class="form-label">رابط الفيديو</label>
-            <input type="text" class="form-control" id="videoLink" name="videoLink" placeholder="أدخل رابط الفيديو" required>
+            <label for="videoUpload" class="form-label">فيديو الدرس</label>
+            <!-- This file input will be replaced by Filebond -->
+            <input type="file" class="form-control" id="videoUpload" accept="video/*" required>
+            <!-- Hidden input to store the uploaded file URL -->
+            <input type="hidden" id="videoLink" name="videoLink">
           </div>
           <div class="mb-3">
             <label for="officeFormLink" class="form-label">رابط اختبار (Office Form)</label>
@@ -117,11 +124,41 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
-          <button type="submit" class="btn btn-primary">إضافة الدرس</button>
+          <!-- The submit button starts disabled -->
+          <button type="submit" class="btn btn-primary" id="submitBtn" disabled>إضافة الدرس</button>
         </div>
       </form>
     </div>
   </div>
 </div>
 
+  <script>
+document.addEventListener('DOMContentLoaded', function() {
+  const videoInput = document.getElementById('videoUpload');
+  const pond = FilePond.create(videoInput, {
+    server: {
+      process: {
+        url: '/admin/upload/video',
+        method: 'POST',
+        onload: (response) => {
+          // Response should be a JSON string. Parse it.
+          const data = JSON.parse(response);
+          // Use data.fileUrl to update the hidden input or UI
+          const fileUrl = data.fileUrl; // adjust based on your response
+        document.getElementById('videoLink').value = fileUrl;
+        document.getElementById('submitBtn').disabled = false;
+          // Enable submit button if needed
+        },
+        onerror: (response) => {
+          console.error('Upload failed:', response);
+        },
+        onprogress: (progress) => {
+          console.log(`Upload progress: ${progress}%`);
+        }
+      }
+    }
+  });
+});
+
+</script>
 <%- include('../partials/footer') %>

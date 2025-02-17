@@ -34,12 +34,10 @@ function loadLesson(lesson) {
     
     const videoContainer = document.getElementById('video-container');
     videoContainer.innerHTML = `
-        <iframe 
-            src="${lesson.videoUrl}" 
-            title="${lesson.title}"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-            allowfullscreen>
-        </iframe>
+        <video controls width="100%">
+            <source src="${lesson.videoUrl}" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
     `;
     
     const quizButton = document.getElementById('quiz-button');

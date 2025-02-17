@@ -4,7 +4,74 @@ const router = express.Router();
 const adminController = require('../controllers/adminController');
 const authMiddleware = require('../middlewares/auth');
 const bcrypt = require('bcryptjs');
+const multer  = require('multer');
+const path = require('path');
 
+// Configure storage for uploaded videos
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      // Specify your upload directory
+      cb(null, 'uploads/videos/');
+    },
+    filename: function (req, file, cb) {
+      // Extract the original file extension
+      const ext = path.extname(file.originalname);
+      // Generate a new filename (you can customize this logic)
+      const newName = Date.now() + '-' + Math.round(Math.random() * 1e9) + ext;
+      cb(null, newName);
+    }
+  });
+// Configure Multer middleware
+const upload = multer({
+  storage: storage,
+  fileFilter: function (req, file, cb) {
+    // Allow only video files (MIME type must start with "video/")
+    if (file.mimetype.startsWith('video/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only video files are allowed!'), false);
+    }
+  },
+  limits: { fileSize: 300 * 1024 * 1024 } // Limit file size to 100MB
+});
+
+// Configure storage with a custom filename
+
+
+// Create the Multer upload instance using the custom storage
+
+
+// Create the POST endpoint at /upload/video
+router.post('/upload/video', (req, res) => {
+    console.log('Uploading video')
+  // "file" is the field name expected from the client (for example from Filebond/FilePond)
+  upload.single('filepond')(req, res, function(err) {
+
+    if (err instanceof multer.MulterError) {
+
+      // Handle Multer errors (e.g., file too large)
+      return res.status(500).json({ error: err.message });
+    } else if (err) {
+
+      // Handle other errors
+      return res.status(500).json({ error: err.message });
+    }
+
+    // If no file was uploaded, return an error
+    if (!req.file) {
+
+      return res.status(400).json({ error: 'No file uploaded.' });
+    }
+
+    // Construct a URL for the uploaded file. You might need to adjust this URL
+    // based on how you serve your static files.
+    const fileUrl = `/uploads/videos/${req.file.filename}`;
+
+    // Send a successful JSON response containing the file URL
+    return res.status(200).json({ fileUrl });
+  });
+});
 
 // عرض صفحة تسجيل دخول المدير
 router.get('/login', authMiddleware.isNotLoggedIn,adminController.getLogin);
