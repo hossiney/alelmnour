@@ -206,6 +206,29 @@ h1 {
     background-color: #1557b0;
 }
 
+/* زر دخول عبر زوم */
+.zoom-button-container {
+    text-align: center;
+    margin-top: 1rem;
+}
+.zoom-join-button {
+    background-color: var(--primary-color);
+    color: var(--white);
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 50px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.zoom-join-button:hover {
+    background-color: #1557b0;
+    transform: scale(1.05);
+}
+
 /* Footer Styles */
 footer {
     background-color: var(--white);

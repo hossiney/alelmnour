@@ -119,6 +119,7 @@ exports.getClassroom = async (req, res) => {
         const formattedData = {
             [invoice._id]: {
                 title: invoice.classroom.name,
+                onlineMeetingLink:invoice.classroom.onlineMeetingLink,
                 lessons: lessons.map((lesson, index) => ({
                     id: index + 1, // يمكن استخدام lesson._id.toString() إذا أردت معرف فريد
                     title: lesson.name,

@@ -7,6 +7,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- إضافة FontAwesome لعرض الأيقونات -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/css/member/style.css">
 </head>
 <body class="classroom-page">
@@ -23,7 +25,7 @@
         <aside class="lessons-sidebar">
             <h2 id="classroom-title">عنوان القاعة</h2>
             <div class="lessons-list" id="lessons-list">
-                <!-- Lessons will be inserted here by JavaScript -->
+                <!-- سيتم إضافة الدروس هنا بواسطة JavaScript -->
             </div>
         </aside>
 
@@ -31,7 +33,13 @@
             <div id="lesson-container">
                 <h3 id="lesson-title">اختر درساً من القائمة</h3>
                 <div class="video-container" id="video-container">
-                    <!-- Video will be inserted here by JavaScript -->
+                    <!-- سيتم إضافة الفيديو هنا بواسطة JavaScript -->
+                </div>
+                <!-- زر دخول عبر زوم -->
+                <div class="zoom-button-container">
+                    <button id="zoom-join-button" value="" class="zoom-join-button" style="display: none;">
+                        <i class="fas fa-video"></i> دخول الاجتماع عبر زوم
+                    </button>
                 </div>
                 <div>
                     <div class="quiz-button-container">
@@ -40,20 +48,28 @@
                         </button>
                     </div>
                 </div>
-               
             </div>
         </section>
     </main>
     <script>
-const lessons = <%- JSON.stringify(lessons) %>;
-
-
+        const lessons = <%- JSON.stringify(lessons) %>;
+        // يمكن إضافة كود JavaScript لتوليد الدروس وتشغيل الفيديوهات
     </script>
 
     <footer>
         <p>جميع الحقوق محفوظة &copy; 2024 - العلم نور</p>
     </footer>
 
+    <!-- ملف جافاسكريبت الخاص بالصفحة -->
     <script src="/js/member/classroom.js"></script>
+    <script>
+        // حدث النقر على زر دخول عبر زوم
+        document.getElementById("zoom-join-button").addEventListener("click", function(e){
+
+            const link = e.target.value;
+            // استبدل الرابط برابط اجتماع زوم الخاص بك
+            window.open(link, "_blank");
+        });
+    </script>
 </body>
 </html>

@@ -93,6 +93,13 @@ Admin.findOne({ email: defaultAdminEmail })
     .then(() => console.log('تم التحقق من المدير الافتراضي.'))
     .catch(err => console.error('خطأ أثناء التحقق من المدير الافتراضي:', err));
 // بدء تشغيل الخادم
+
+app.use((err, req, res, next) => {
+  console.error('🔥 خطأ في EJS:', err.message);
+  return res.render('404')
+});
+
+
 app.use(function(req, res, next) {
 
 

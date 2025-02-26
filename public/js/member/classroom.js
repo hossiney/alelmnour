@@ -73,7 +73,16 @@ function initializeClassroomPage() {
     currentClassroom.lessons.forEach(lesson => {
         lessonsList.appendChild(createLessonItem(lesson));
     });
+    if (currentClassroom.onlineMeetingLink) {
+        
+        const zoomBtn = document.getElementById("zoom-join-button");
+    // Remove the display none (you can also remove the whole style attribute)
+    zoomBtn.style.display = "inline-block"; // or "block", as preferred
     
+    // Set the value attribute of the button
+    zoomBtn.value = currentClassroom.onlineMeetingLink; // replace wi
+
+    }
     // Load the first lesson by default
     if (currentClassroom.lessons.length > 0) {
         loadLesson(currentClassroom.lessons[0]);
