@@ -101,6 +101,15 @@ function initializeClassroomPage() {
 // Run initialization when DOM is loaded
 document.addEventListener('DOMContentLoaded', initializeClassroomPage);
 
+function formatTime(time24) {
+    let [hours, minutes] = time24.split(':');
+    let date = new Date();
+    date.setHours(parseInt(hours, 10), parseInt(minutes, 10));
+
+    return date.toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit', hour12: true });
+}
+
+
 
 const modal = document.getElementById("myModal");
 const btn = document.getElementById("calendar-button");
@@ -116,8 +125,8 @@ btn.addEventListener("click", function() {
     // إضافة البيانات إلى الجدول
     schedule.forEach(entry => {
       const row = document.createElement("tr");
-      row.innerHTML = `<td>${counter}</td><td>${entry.day}</td><td>${entry.time}</td>`;
-      tableBody.appendChild(row);
+      row.innerHTML = `<td>${counter}</td><td>${entry.day}</td><td>${entry.time} - (${formatTime(entry.time)})</td>`;
+            tableBody.appendChild(row);
       counter++;
     });
 
