@@ -116,6 +116,11 @@ router.get('/classroom/delete/:id', authMiddleware.authenticateAdmin, adminContr
 // حذف درس من القاعة الدراسية
 router.get('/classroom/:classroomId/delete-lesson/:lessonId', authMiddleware.authenticateAdmin, adminController.deleteLessonClassroom);
 
+router.get('/classroom/:id/schedules', authMiddleware.authenticateAdmin, adminController.getClassroomDates);
+
+router.post('/classroom/:classroomId/schedules/add',authMiddleware.authenticateAdmin, adminController.addClassroomDates);
+// endpoint لحذف موعد من القاعة
+router.delete('/classroom/:classroomId/schedules/delete/:scheduleId', authMiddleware.authenticateAdmin, adminController.deleteClassroomDates);
 
 
 /// invoices router 

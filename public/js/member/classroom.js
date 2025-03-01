@@ -66,7 +66,15 @@ function initializeClassroomPage() {
     }
     
     currentClassroom = classroomsData[classroomId];
-    
+
+    if(currentClassroom.schedule.length > 0) {
+        const btn = document.getElementById("calendar-button");
+        // Remove the display none (you can also remove the whole style attribute)
+        btn.style.display = "inline-block"; // or "block", as preferred
+
+
+    }
+
     document.getElementById('classroom-title').textContent = currentClassroom.title;
     
     const lessonsList = document.getElementById('lessons-list');
@@ -92,3 +100,38 @@ function initializeClassroomPage() {
 
 // Run initialization when DOM is loaded
 document.addEventListener('DOMContentLoaded', initializeClassroomPage);
+
+
+const modal = document.getElementById("myModal");
+const btn = document.getElementById("calendar-button");
+const closeBtn = document.getElementsByClassName("close")[0];
+const tableBody = document.getElementById("scheduleTable");
+// عند النقر على زر الفتح، تظهر النافذة
+btn.addEventListener("click", function() {
+    const schedule = currentClassroom.schedule;
+    let counter = 1;
+
+    tableBody.innerHTML = "";
+
+    // إضافة البيانات إلى الجدول
+    schedule.forEach(entry => {
+      const row = document.createElement("tr");
+      row.innerHTML = `<td>${counter}</td><td>${entry.day}</td><td>${entry.time}</td>`;
+      tableBody.appendChild(row);
+      counter++;
+    });
+
+  modal.style.display = "block";
+});
+
+// عند النقر على زر الإغلاق، تغلق النافذة
+closeBtn.addEventListener("click", function() {
+  modal.style.display = "none";
+});
+
+// إغلاق النافذة عند النقر خارج محتواها
+window.addEventListener("click", function(event) {
+  if (event.target === modal) {
+    modal.style.display = "none";
+  }
+});

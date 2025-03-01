@@ -120,6 +120,7 @@ exports.getClassroom = async (req, res) => {
             [invoice._id]: {
                 title: invoice.classroom.name,
                 onlineMeetingLink:invoice.classroom.onlineMeetingLink,
+                schedule:invoice.classroom.schedule,
                 lessons: lessons.map((lesson, index) => ({
                     id: index + 1, // يمكن استخدام lesson._id.toString() إذا أردت معرف فريد
                     title: lesson.name,

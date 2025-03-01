@@ -27,12 +27,15 @@
 <script>
   // تجهيز بيانات الفواتير باستخدام المتغير server-side (invoices)
   const invoicesData = <%- JSON.stringify(
+
+
     invoices.map(invoice => ({
+
       invoiceNumber: invoice.invoiceNumber,
       active: invoice.active? "نشط":"منتهي",
       memberName: invoice.member.name,
       memberMobile: invoice.member.mobile,
-      department:invoice.classroom.department,
+      department:invoice.classroom?.department? invoice.classroom.department : "غير محدد" ,
       classroom: invoice.classroom ? invoice.classroom.name : 'غير محدد',
       classroomType: invoice.classroom.hallType,
       date :  new Date(invoice.date).toLocaleDateString(),

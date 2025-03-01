@@ -213,6 +213,79 @@ exports.getAddClassroom = (req, res) => {
     }
   };
   
+ 
+   exports.getClassroomDates = async (req, res) => {
+    const { id } = req.params;
+    try {
+      const classroom = await Classroom.findById(id);
+      if (!classroom) {
+        return res.send('القاعة الدراسية غير موجودة');
+      }
+      // جلب الدروس الخاصة بالقاعة من جدول Lesson
+
+      return res.json(classroom.schedule)
+
+    } catch (error) {
+      console.error(error);
+      res.send('حدث خطأ أثناء جلب تفاصيل القاعة الدراسية');
+    }
+  };
+
+  exports.addClassroomDates = async (req, res) =>  {
+
+
+    console.log('addClassroomDates')
+    try {
+      const { classroomId } = req.params;
+      const { day, time } = req.body;
+      
+      // البحث عن القاعة
+      const classroom = await Classroom.findById(classroomId);
+      if (!classroom) {
+        return res.status(404).json({ error: 'قاعة الدراسة غير موجودة' });
+      }
+      
+      // إضافة الموعد إلى مصفوفة المواعيد
+      classroom.schedule.push({ day, time });
+      await classroom.save();
+      
+      // استرجاع الموعد المضاف (سيحتوي على _id)
+      const addedSchedule = classroom.schedule[classroom.schedule.length - 1];
+      res.json(addedSchedule);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: 'خطأ في الخادم' });
+    }
+  }
+
+
+  exports.deleteClassroomDates = async (req, res) =>  {
+    try {
+      const { classroomId, scheduleId } = req.params;
+      
+      // البحث عن القاعة
+      const classroom = await Classroom.findById(classroomId);
+      if (!classroom) {
+        return res.status(404).json({ error: 'قاعة الدراسة غير موجودة' });
+      }
+      
+      // تحديث المصفوفة عن طريق تصفية العناصر التي لا تتطابق مع scheduleId
+      const originalLength = classroom.schedule.length;
+      classroom.schedule = classroom.schedule.filter(schedule => schedule._id.toString() !== scheduleId);
+      
+      if (classroom.schedule.length === originalLength) {
+        return res.status(404).json({ error: 'الموعد غير موجود' });
+      }
+      
+      await classroom.save();
+      
+      res.json({ message: 'تم حذف الموعد بنجاح' });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: 'خطأ في الخادم' });
+    }
+  }
+  
   // عرض صفحة إضافة درس جديد للقاعة الدراسية
   exports.getAddLessonClassroom = async (req, res) => {
     const { id } = req.params; // معرف القاعة

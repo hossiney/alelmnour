@@ -211,6 +211,31 @@ h1 {
     text-align: center;
     margin-top: 1rem;
 }
+
+    .zoom-button-container {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .zoom-button-container button {
+        flex: 1;
+        min-width: 150px; /* الحد الأدنى للعرض */
+        max-width: 250px; /* الحد الأقصى للعرض على الشاشات الكبيرة */
+        padding: 10px 15px; /* تحسين التباعد داخل الزر */
+        font-size: 14px;
+    }
+    
+    /* تقليل العرض على الشاشات الكبيرة */
+    @media (min-width: 768px) {
+        .zoom-button-container button {
+            flex: unset;
+            width: auto;
+            max-width: 180px; /* تصغير الأزرار على الحاسوب */
+        }
+    }
+
 .zoom-join-button {
     background-color: var(--primary-color);
     color: var(--white);
@@ -225,6 +250,24 @@ h1 {
     gap: 0.5rem;
 }
 .zoom-join-button:hover {
+    background-color: #1557b0;
+    transform: scale(1.05);
+}
+
+.calendar-button {
+    background-color: var(--primary-color);
+    color: var(--white);
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 50px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.calendar-button:hover {
     background-color: #1557b0;
     transform: scale(1.05);
 }

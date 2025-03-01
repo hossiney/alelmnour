@@ -49,9 +49,11 @@
                 department: '<%= classroom.department %>',
                 hallType: '<%= classroom.hallType %>',
                 onlineMeetingLink: '<a href="<%= classroom.onlineMeetingLink %>" target="_blank">رابط الاجتماع</a>',
-                actions: '<a href="/admin/classroom/<%= classroom._id %>">عرض التفاصيل</a> | ' +
-                         '<button type="button" class="btn btn-sm btn-warning edit-meeting-link" data-id="<%= classroom._id %>" data-link="<%= classroom.onlineMeetingLink %>">تعديل رابط الاجتماع</button> | ' +
-                         '<a href="/admin/classroom/delete/<%= classroom._id %>" onclick="return confirm(\'هل أنت متأكد من حذف هذه القاعة الدراسية؟\')">حذف</a>'
+                actions: 
+                  '<a href="/admin/classroom/<%= classroom._id %>">عرض التفاصيل</a> | ' +
+                  '<button type="button" class="btn btn-sm btn-info view-schedule" data-id="<%= classroom._id %>" data-name="<%= classroom.name %>">عرض المواعيد</button> | ' +
+                  '<button type="button" class="btn btn-sm btn-warning edit-meeting-link" data-id="<%= classroom._id %>" data-link="<%= classroom.onlineMeetingLink %>">تعديل رابط الاجتماع</button> | ' +
+                  '<a href="/admin/classroom/delete/<%= classroom._id %>" onclick="return confirm(\'هل أنت متأكد من حذف هذه القاعة الدراسية؟\')">حذف</a>'
               },
             <% }); %>
           ],
@@ -72,7 +74,7 @@
             }
           }
         }).render(document.getElementById("gridjs-wrapper"));
-
+      
         // مستمع حدث لزر تعديل رابط الاجتماع
         document.addEventListener('click', function(event) {
           if(event.target && event.target.classList.contains('edit-meeting-link')) {
@@ -87,6 +89,7 @@
           }
         });
       </script>
+      
     </main>
 
 
@@ -155,5 +158,159 @@
     </div>
   </div>
 </div>
+
+<!-- Modal لإدارة المواعيد -->
+<div class="modal fade" id="scheduleModal" tabindex="-1" aria-labelledby="scheduleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="scheduleModalLabel">مواعيد القاعة: <span id="classroomName"></span></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+      </div>
+      <div class="modal-body">
+        <!-- جدول عرض المواعيد -->
+        <table class="table">
+          <thead>
+            <tr>
+              <th>اليوم</th>
+              <th>الوقت</th>
+              <th>الإجراءات</th>
+            </tr>
+          </thead>
+          <tbody id="scheduleTableBody">
+            <!-- سيتم تعبئة البيانات عبر جافا سكريبت -->
+          </tbody>
+        </table>
+        <hr>
+        <!-- نموذج إضافة موعد جديد -->
+        <h5>إضافة موعد جديد</h5>
+        <form id="addScheduleForm">
+          <div class="mb-3">
+            <label for="scheduleDay" class="form-label">اليوم</label>
+            <select class="form-select" id="scheduleDay" name="day" required>
+              <option value="">اختر اليوم</option>
+              <option value="الأحد">الأحد</option>
+              <option value="الاثنين">الاثنين</option>
+              <option value="الثلاثاء">الثلاثاء</option>
+              <option value="الأربعاء">الأربعاء</option>
+              <option value="الخميس">الخميس</option>
+              <option value="الجمعة">الجمعة</option>
+              <option value="السبت">السبت</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="scheduleTime" class="form-label">الوقت</label>
+            <input type="time" class="form-control" id="scheduleTime" name="time" required>
+          </div>
+          <!-- لحفظ معرف القاعة المُختارة -->
+          <input type="hidden" id="classroomIdForSchedule" name="classroomId">
+          <button type="submit" class="btn btn-primary">إضافة موعد</button>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  // عند النقر على زر "عرض المواعيد"
+  document.addEventListener('click', function(event) {
+    if (event.target && event.target.classList.contains('view-schedule')) {
+      const classroomId = event.target.getAttribute('data-id');
+      const classroomName = event.target.getAttribute('data-name');
+      document.getElementById('classroomName').innerText = classroomName;
+      document.getElementById('classroomIdForSchedule').value = classroomId;
+      // تفريغ جدول المواعيد قبل التحميل
+      document.getElementById('scheduleTableBody').innerHTML = '';
+
+      // جلب بيانات المواعيد من الخادم (يجب توفير مسار مناسب في السيرفر)
+      fetch(`/admin/classroom/${classroomId}/schedules`)
+        .then(response => response.json())
+        .then(data => {
+          data.forEach(schedule => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td>${schedule.day}</td>
+              <td>${schedule.time}</td>
+              <td>
+                <button type="button" class="btn btn-sm btn-danger delete-schedule" data-id="${schedule._id}" data-classroom="${classroomId}">حذف</button>
+              </td>
+            `;
+            document.getElementById('scheduleTableBody').appendChild(tr);
+          });
+        });
+
+      // عرض المودال
+      var scheduleModal = new bootstrap.Modal(document.getElementById('scheduleModal'));
+      scheduleModal.show();
+    }
+  });
+
+  // التعامل مع إرسال نموذج إضافة موعد جديد
+  document.getElementById('addScheduleForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const classroomId = document.getElementById('classroomIdForSchedule').value;
+    const day = document.getElementById('scheduleDay').value;
+    const time = document.getElementById('scheduleTime').value;
+    
+    fetch(`/admin/classroom/${classroomId}/schedules/add`, {
+      method: 'POST',
+      headers: {
+         'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ day, time })
+    })
+    .then(response => response.json())
+    .then(schedule => {
+      // إضافة السطر الجديد في جدول المواعيد
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${schedule.day}</td>
+        <td>${schedule.time}</td>
+        <td>
+          <button type="button" class="btn btn-sm btn-danger delete-schedule" data-id="${schedule._id}" data-classroom="${classroomId}">حذف</button>
+        </td>
+      `;
+      document.getElementById('scheduleTableBody').appendChild(tr);
+      // إعادة تعيين النموذج
+      document.getElementById('addScheduleForm').reset();
+    }).catch(error => console.log('Error', error));
+    
+  });
+
+  // (اختياري) يمكنك إضافة مستمعات لأزرار التعديل والحذف للمواعيد كما هو موضح أدناه:
+  document.addEventListener('click', function(event) {
+    // تعديل موعد موجود
+    if (event.target && event.target.classList.contains('edit-schedule')) {
+      const scheduleId = event.target.getAttribute('data-id');
+      const currentDay = event.target.getAttribute('data-day');
+      const currentTime = event.target.getAttribute('data-time');
+      // يمكنك فتح مودال جديد أو استخدام نموذج داخل المودال الحالي لتعديل البيانات
+      // مثال: تعبئة نموذج التعديل داخل المودال باستخدام currentDay و currentTime مع حفظ scheduleId
+      // ثم إرسال طلب PUT أو PATCH لتحديث الموعد
+      alert('تفعيل وظيفة التعديل للمواعيد: ' + scheduleId);
+    }
+
+    // حذف موعد
+    if (event.target && event.target.classList.contains('delete-schedule')) {
+      if (confirm('هل أنت متأكد من حذف هذا الموعد؟')) {
+        const scheduleId = event.target.getAttribute('data-id');
+        const classroomId = event.target.getAttribute('data-classroom');
+        fetch(`/admin/classroom/${classroomId}/schedules/delete/${scheduleId}`, {
+          method: 'DELETE'
+        })
+        .then(response => response.json())
+        .then(result => {
+          // إزالة الصف من الجدول
+          event.target.closest('tr').remove();
+        });
+      }
+    }
+  });
+</script>
+
 
 <%- include('../partials/footer') %>
