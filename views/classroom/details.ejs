@@ -150,8 +150,13 @@ function showOfficeForms(lessonName, links) {
     } else {
       links.forEach((link, index) => {
         const listItem = document.createElement('li');
-        listItem.className = 'list-group-item';
-        listItem.innerHTML = `<a href="${link}" target="_blank">اختبار ${index + 1}</a>`;
+        listItem.className = 'list-group-item d-flex justify-content-between align-items-center';
+        listItem.innerHTML = `
+          <a href="${link}" target="_blank">اختبار ${index + 1}</a>
+          <button class="btn btn-danger btn-sm" onclick="deleteTest('${lessonName}', '${encodeURIComponent(link)}')">
+            <i class="fas fa-trash"></i>
+          </button>
+        `;
         modalBody.appendChild(listItem);
       });
     }
@@ -159,6 +164,32 @@ function showOfficeForms(lessonName, links) {
     var modal = new bootstrap.Modal(document.getElementById('officeFormsModal'));
     modal.show();
   }
+
+function deleteTest(lessonName, testLink) {
+  if (confirm('هل أنت متأكد من حذف هذا الاختبار؟')) {
+    const classroomId = window.location.href.split('/classroom/')[1];
+    
+    fetch(`/classroom/${classroomId}/lesson/${lessonName}/delete-test`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ testLink: decodeURIComponent(testLink) })
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        location.reload();
+      } else {
+        alert('حدث خطأ أثناء حذف الاختبار');
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert('حدث خطأ أثناء حذف الاختبار');
+    });
+  }
+}
       </script>
     </main>
 
@@ -264,6 +295,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <script>
 function showAddTestModal(lessonName) {
   document.getElementById('lessonNameForTest').value = lessonName;
+  document.getElementById('testLink').value = '';
   var modal = new bootstrap.Modal(document.getElementById('addTestModal'));
   modal.show();
 }

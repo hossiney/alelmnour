@@ -152,3 +152,42 @@ exports.addTestToLesson = async (req, res) => {
     res.status(500).json({ success: false, error: 'حدث خطأ أثناء إضافة الاختبار' });
   }
 };
+
+// حذف اختبار من الدرس
+exports.deleteTestFromLesson = async (req, res) => {
+  const { classroomId, lessonName } = req.params;
+  const { testLink } = req.body;
+
+  try {
+    // البحث عن الدرس
+    const lesson = await Lesson.findOne({ 
+      name: lessonName,
+      classroom: classroomId 
+    });
+
+    if (!lesson) {
+      return res.status(404).json({ success: false, error: 'الدرس غير موجود' });
+    }
+
+    // التأكد من وجود روابط للاختبارات
+    if (!lesson.officeFormLinks || !lesson.officeFormLinks.length) {
+      return res.status(400).json({ success: false, error: 'لا توجد اختبارات للحذف' });
+    }
+
+    // البحث عن الرابط وحذفه
+    const linkIndex = lesson.officeFormLinks.indexOf(testLink);
+    if (linkIndex === -1) {
+      return res.status(400).json({ success: false, error: 'الاختبار غير موجود' });
+    }
+
+    // حذف الاختبار من المصفوفة
+    lesson.officeFormLinks.splice(linkIndex, 1);
+
+    await lesson.save();
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, error: 'حدث خطأ أثناء حذف الاختبار' });
+  }
+};

@@ -27,5 +27,6 @@ router.get('/delete/:id', classroomController.deleteClassroom);
 router.get('/:classroomId/delete-lesson/:lessonId', classroomController.deleteLesson);
 
 router.post('/:classroomId/lesson/:lessonName/add-test', classroomController.addTestToLesson);
+router.post('/:classroomId/lesson/:lessonName/delete-test', classroomController.deleteTestFromLesson);
 
 module.exports = router;
