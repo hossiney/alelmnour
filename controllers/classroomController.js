@@ -121,3 +121,34 @@ exports.deleteLesson = async (req, res) => {
     res.send('حدث خطأ أثناء حذف الدرس');
   }
 };
+
+// إضافة اختبار للدرس
+exports.addTestToLesson = async (req, res) => {
+  const { classroomId, lessonName } = req.params;
+  const { testLink } = req.body;
+
+  try {
+    // البحث عن الدرس
+    const lesson = await Lesson.findOne({ 
+      name: lessonName,
+      classroom: classroomId 
+    });
+
+    if (!lesson) {
+      return res.status(404).json({ success: false, error: 'الدرس غير موجود' });
+    }
+
+    // إضافة رابط الاختبار الجديد إلى مصفوفة officeFormLinks
+    if (!lesson.officeFormLinks) {
+      lesson.officeFormLinks = [];
+    }
+    lesson.officeFormLinks.push(testLink);
+
+    await lesson.save();
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, error: 'حدث خطأ أثناء إضافة الاختبار' });
+  }
+};

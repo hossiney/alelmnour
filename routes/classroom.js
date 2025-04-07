@@ -26,4 +26,6 @@ router.get('/delete/:id', classroomController.deleteClassroom);
 // حذف درس من القاعة الدراسية
 router.get('/:classroomId/delete-lesson/:lessonId', classroomController.deleteLesson);
 
+router.post('/:classroomId/lesson/:lessonName/add-test', classroomController.addTestToLesson);
+
 module.exports = router;

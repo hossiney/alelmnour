@@ -45,6 +45,9 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+        <button type="button" class="btn btn-success" id="addTestBtn" onclick="">
+          <i class="fas fa-plus"></i> إضافة اختبار
+        </button>
       </div>
     </div>
   </div>
@@ -68,7 +71,11 @@
         formatter: (cell, row) => {
 
           if (!cell || cell.length === 0) {
-            return gridjs.html('لا يوجد اختبار');
+            return gridjs.html(`
+                <button class="btn btn-success btn-sm ms-2" onclick="showAddTestModal('${row._cells[0].data}')">
+                  <i class="fas fa-plus"></i> إضافة اختبار
+                </button>
+            `);
           }
           return gridjs.html(`
   <button class="btn btn-primary btn-sm" onclick='showOfficeForms("${row._cells[0].data}","${cell}")'>
@@ -124,9 +131,19 @@ function showOfficeForms(lessonName, links) {
     
     const modalTitle = document.getElementById('officeFormsModalLabel');
     const modalBody = document.getElementById('officeFormsList');
+    const addTestBtn = document.getElementById('addTestBtn');
 
     modalTitle.innerText = `روابط الاختبارات لـ ${lessonName}`;
     modalBody.innerHTML = '';
+    
+    // تعيين اسم الدرس لزر إضافة الاختبار
+    addTestBtn.onclick = function() {
+      // إغلاق النافذة الحالية
+      var currentModal = bootstrap.Modal.getInstance(document.getElementById('officeFormsModal'));
+      currentModal.hide();
+      // فتح نافذة إضافة اختبار
+      showAddTestModal(lessonName);
+    };
 
     if (links.length === 0) {
       modalBody.innerHTML = '<p class="text-muted">لا يوجد روابط اختبارات</p>';
@@ -220,5 +237,63 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
+</script>
+
+<!-- Modal لإضافة اختبار جديد -->
+<div class="modal fade" id="addTestModal" tabindex="-1" aria-labelledby="addTestModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addTestModalLabel">إضافة اختبار جديد</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+      </div>
+      <div class="modal-body">
+        <form id="addTestForm">
+          <input type="hidden" id="lessonNameForTest" name="lessonName">
+          <div class="mb-3">
+            <label for="testLink" class="form-label">رابط الاختبار</label>
+            <input type="text" class="form-control" id="testLink" name="testLink" required placeholder="أدخل رابط الاختبار">
+          </div>
+          <button type="submit" class="btn btn-primary">إضافة الاختبار</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function showAddTestModal(lessonName) {
+  document.getElementById('lessonNameForTest').value = lessonName;
+  var modal = new bootstrap.Modal(document.getElementById('addTestModal'));
+  modal.show();
+}
+
+document.getElementById('addTestForm').addEventListener('submit', function(e) {
+
+  const classroomId = window.location.href.split('/classroom/')[1];
+  e.preventDefault();
+  const lessonName = document.getElementById('lessonNameForTest').value;
+  const testLink = document.getElementById('testLink').value;
+  
+  fetch(`/classroom/${classroomId}/lesson/${lessonName}/add-test`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ testLink })
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      location.reload();
+    } else {
+      alert('حدث خطأ أثناء إضافة الاختبار');
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    alert('حدث خطأ أثناء إضافة الاختبار');
+  });
+});
 </script>
 <%- include('../partials/footer') %>
