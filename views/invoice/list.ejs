@@ -37,7 +37,7 @@
       memberMobile: invoice.member.mobile,
       department:invoice.classroom?.department? invoice.classroom.department : "غير محدد" ,
       classroom: invoice.classroom ? invoice.classroom.name : 'غير محدد',
-      classroomType: invoice.classroom.hallType,
+      classroomType: invoice.classroom ? invoice.classroom.hallType : 'غير محدد',
       date :  new Date(invoice.date).toLocaleDateString(),
       expirationDate: new Date(invoice.expirationDate).toLocaleDateString(),
       actions: `<a href="/invoice/delete/${invoice._id}" onclick="return confirm('هل أنت متأكد من حذف هذه الفاتورة؟')" class="btn btn-danger btn-sm">حذف</a>`

@@ -286,11 +286,10 @@
         if (memberData.invoice.length > 0) {
           memberData.invoice.forEach(invoice => {
 
-            console.log(invoice.classroom)
             const row = `<tr>
               <td>${invoice.invoiceNumber}</td>
-              <td>${invoice.classroom.department}</td>
-              <td>${invoice.classroom.name}</td>
+              <td>${invoice.classroom ? invoice.classroom.department : 'غير معروف'}</td>
+              <td>${invoice.classroom ? invoice.classroom.name : 'غير معروف'}</td>
               <td>${new Date(invoice.date).toLocaleDateString()}</td>
               <td>${invoice.active == true ? 'نشط' : 'منتهي'}</td>
             </tr>`;

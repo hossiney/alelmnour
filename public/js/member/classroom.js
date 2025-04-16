@@ -11,7 +11,7 @@ function getUrlParameter(name) {
     return urlParams.get(name);
 }
 
-// Function to create lesson items
+// Function to create lesson item
 function createLessonItem(lesson) {
     const item = document.createElement('div');
     item.className = 'lesson-item';
@@ -21,6 +21,15 @@ function createLessonItem(lesson) {
         document.querySelectorAll('.lesson-item').forEach(item => item.classList.remove('active'));
         item.classList.add('active');
         loadLesson(lesson);
+        
+        // التحقق ما إذا كان الجهاز يدعم التمرير السلس
+        if ('scrollBehavior' in document.documentElement.style) {
+            // الانتظار قليلاً حتى يتم تحميل الدرس
+            setTimeout(() => {
+                const videoContainer = document.getElementById('video-container');
+                videoContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 300);
+        }
     });
     
     return item;
